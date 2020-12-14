@@ -100,6 +100,7 @@ resource "aws_iam_user" "rw" {
 }
 
 resource "aws_iam_user_policy_attachment" "rw" {
+  count = var.create_rw_user ? 1 : 0
   policy_arn = aws_iam_policy.rw.arn
   user = aws_iam_user.rw.name
 }
@@ -111,6 +112,7 @@ resource "aws_iam_user" "ro" {
 }
 
 resource "aws_iam_user_policy_attachment" "ro" {
+  count = var.create_ro_user ? 1 : 0
   policy_arn = aws_iam_policy.ro.arn
   user = aws_iam_user.ro.name
 }
