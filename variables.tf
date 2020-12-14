@@ -31,3 +31,11 @@ variable "restrict_public_buckets" {
 variable "ignore_public_acls" {
   default = true
 }
+
+variable "create_ro_user" {
+  default = true
+}
+
+variable "create_rw_user" {
+  default = true
+}

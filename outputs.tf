@@ -39,25 +39,25 @@ output "iam_policy_ro_name" {
 }
 
 output "iam_user_rw_arn" {
-  value = aws_iam_user.rw.arn
+  value = join("", aws_iam_user.rw.*.arn)
 }
 
 output "iam_user_rw_id" {
-  value = aws_iam_user.rw.id
+  value = join("", aws_iam_user.rw.*.id)
 }
 
 output "iam_user_rw_name" {
-  value = aws_iam_user.rw.name
+  value = join("", aws_iam_user.rw.*.name)
 }
 
 output "iam_user_ro_arn" {
-  value = aws_iam_user.ro.arn
+  value = join("", aws_iam_user.ro.*.arn)
 }
 
 output "iam_user_ro_id" {
-  value = aws_iam_user.ro.id
+  value = join("", aws_iam_user.ro.*.id)
 }
 
 output "iam_user_ro_name" {
-  value = aws_iam_user.ro.name
+  value = join("", aws_iam_user.ro.*.name)
 }
