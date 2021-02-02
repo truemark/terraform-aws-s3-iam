@@ -1,7 +1,7 @@
 variable "name" {}
 
 variable "path" {
-  default = "/terraforn/"
+  default = "/terraform/"
 }
 
 variable "acl" {
