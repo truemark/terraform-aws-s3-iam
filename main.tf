@@ -20,6 +20,30 @@ resource "aws_s3_bucket" "s3" {
     }
   }
 
+  dynamic lifecycle_rule {
+    for_each = var.ia_transition_days == -1 ? [] : [1]
+    content {
+      id = "default-ia-transition"
+      enabled = true
+      transition {
+        storage_class = var.ia_storage_class
+        days = var.ia_transition_days
+      }
+    }
+  }
+
+  dynamic lifecycle_rule {
+    for_each = var.glacier_transition_days == -1 ? [] : [1]
+    content {
+      id = "default-ia-transition"
+      enabled = true
+      transition {
+        storage_class = "GLACIER"
+        days = var.ia_transition_days
+      }
+    }
+  }
+
   versioning {
     enabled = var.versioning
   }
