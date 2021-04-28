@@ -1,7 +1,7 @@
 variable "name" {}
 
 variable "path" {
-  default = "/terraforn/"
+  default = "/terraform/"
 }
 
 variable "acl" {
@@ -38,4 +38,21 @@ variable "create_ro_user" {
 
 variable "create_rw_user" {
   default = true
+}
+
+variable "ia_transition_days" {
+  default = -1
+  type = number
+  description = "Days before moving content to infrequent access"
+}
+
+variable "ia_storage_class" {
+  default = "STANDARD_IA"
+  description = "One of STANDARD_IA or ONEZONE_IA"
+}
+
+variable "glacier_transition_days" {
+  default = -1
+  type = number
+  description = "Days before moving content to infrequent access"
 }

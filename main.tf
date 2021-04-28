@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
+    }
+  }
+}
+
 resource "aws_s3_bucket" "s3" {
   bucket = var.name
   acl = var.acl
@@ -7,6 +16,30 @@ resource "aws_s3_bucket" "s3" {
     rule {
       apply_server_side_encryption_by_default {
         sse_algorithm     = "AES256"
+      }
+    }
+  }
+
+  dynamic lifecycle_rule {
+    for_each = var.ia_transition_days == -1 ? [] : [1]
+    content {
+      id = "default-ia-transition"
+      enabled = true
+      transition {
+        storage_class = var.ia_storage_class
+        days = var.ia_transition_days
+      }
+    }
+  }
+
+  dynamic lifecycle_rule {
+    for_each = var.glacier_transition_days == -1 ? [] : [1]
+    content {
+      id = "default-ia-transition"
+      enabled = true
+      transition {
+        storage_class = "GLACIER"
+        days = var.ia_transition_days
       }
     }
   }
@@ -101,7 +134,7 @@ resource "aws_iam_user" "rw" {
 
 resource "aws_iam_user_policy_attachment" "rw" {
   count = var.create_rw_user ? 1 : 0
-  policy_arn = aws_iam_policy.rw[count.index].arn
+  policy_arn = aws_iam_policy.rw.arn
   user = aws_iam_user.rw[count.index].name
 }
 
@@ -113,6 +146,6 @@ resource "aws_iam_user" "ro" {
 
 resource "aws_iam_user_policy_attachment" "ro" {
   count = var.create_ro_user ? 1 : 0
-  policy_arn = aws_iam_policy.ro[count.index].arn
+  policy_arn = aws_iam_policy.ro.arn
   user = aws_iam_user.ro[count.index].name
 }
