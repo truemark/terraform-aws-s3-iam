@@ -39,3 +39,7 @@ variable "create_ro_user" {
 variable "create_rw_user" {
   default = true
 }
+
+variable "enable_cloudfront_access" {
+  default = false
+}

@@ -1,6 +1,5 @@
 resource "aws_s3_bucket" "s3" {
   bucket = var.name
-  acl = var.acl
   force_destroy = var.force_destroy
 
   server_side_encryption_configuration {
@@ -11,6 +10,17 @@ resource "aws_s3_bucket" "s3" {
     }
   }
 
+  grant {
+    id          = data.aws_canonical_user_id.current.id
+    permissions = ["FULL_CONTROL"]
+    type        = "CanonicalUser"
+  }
+
+  grant {
+    id          = "c4c1ede66af53448b93c283ce9448c4ba468c9432aa01d700d3878632f77d2d0"
+    permissions = var.enable_cloudfront_access ? ["FULL_CONTROL"] : []
+    type        = "CanonicalUser"
+  }
   versioning {
     enabled = var.versioning
   }
