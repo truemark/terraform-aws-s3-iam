@@ -20,7 +20,7 @@ resource "aws_s3_bucket" "s3" {
   }
 
   lifecycle_rule {
-    id      = "retention_policy"
+    id      = "expiration_policy"
     enabled = local.expiration_days > 0
 
     expiration {
