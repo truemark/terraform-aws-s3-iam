@@ -21,6 +21,7 @@ resource "aws_s3_bucket" "s3" {
     permissions = var.enable_cloudfront_access ? ["FULL_CONTROL"] : []
     type        = "CanonicalUser"
   }
+
   versioning {
     enabled = var.versioning
   }
