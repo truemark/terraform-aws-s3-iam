@@ -3,9 +3,9 @@ data "aws_canonical_user_id" "current" {}
 locals {
   grant_ids = var.enable_cloudfront_access ? ["c4c1ede66af53448b93c283ce9448c4ba468c9432aa01d700d3878632f77d2d0", data.aws_canonical_user_id.current.id] : []
   acl = var.enable_cloudfront_access ? null : var.acl
-  expiration_days = var.expiration_days
-
+  expiration_days = var.expiration_days > 0 ? [var.expiration_days] : []
 }
+
 resource "aws_s3_bucket" "s3" {
   bucket = var.name
   acl = local.acl
@@ -19,12 +19,13 @@ resource "aws_s3_bucket" "s3" {
     }
   }
 
-  lifecycle_rule {
-    id      = "expiration_policy"
-    enabled = local.expiration_days > 0
-
-    expiration {
-      days = local.expiration_days
+  dynamic "lifecycle_rule" {
+    for_each = local.expiration_days
+    content {
+      id      = "expiration_policy"
+      expiration {
+        days = lifecycle_rule.value
+      }
     }
   }
 
