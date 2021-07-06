@@ -1,6 +1,13 @@
+data "aws_canonical_user_id" "current" {}
+
+locals {
+  grant_ids = var.enable_cloudfront_access ? ["c4c1ede66af53448b93c283ce9448c4ba468c9432aa01d700d3878632f77d2d0", data.aws_canonical_user_id.current.id] : []
+  acl = var.enable_cloudfront_access ? null : var.acl
+
+}
 resource "aws_s3_bucket" "s3" {
   bucket = var.name
-  acl = var.acl
+  acl = local.acl
   force_destroy = var.force_destroy
 
   server_side_encryption_configuration {
@@ -8,6 +15,15 @@ resource "aws_s3_bucket" "s3" {
       apply_server_side_encryption_by_default {
         sse_algorithm     = "AES256"
       }
+    }
+  }
+
+  dynamic "grant" {
+    for_each = local.grant_ids
+    content {
+      id          = grant.value
+      permissions = ["FULL_CONTROL"]
+      type        = "CanonicalUser"
     }
   }
 
