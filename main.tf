@@ -3,6 +3,7 @@ data "aws_canonical_user_id" "current" {}
 locals {
   grant_ids = var.enable_cloudfront_access ? ["c4c1ede66af53448b93c283ce9448c4ba468c9432aa01d700d3878632f77d2d0", data.aws_canonical_user_id.current.id] : []
   acl = var.enable_cloudfront_access ? null : var.acl
+  expiration_days = var.expiration_days
 
 }
 resource "aws_s3_bucket" "s3" {
@@ -15,6 +16,15 @@ resource "aws_s3_bucket" "s3" {
       apply_server_side_encryption_by_default {
         sse_algorithm     = "AES256"
       }
+    }
+  }
+
+  lifecycle_rule {
+    id      = "retention_policy"
+    enabled = local.expiration_days > 0
+
+    expiration {
+      days = local.expiration_days
     }
   }
 
