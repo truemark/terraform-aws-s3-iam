@@ -43,3 +43,7 @@ variable "create_rw_user" {
 variable "enable_cloudfront_access" {
   default = false
 }
+
+variable "expiration_days" {
+  default = -1
+}
