@@ -23,6 +23,7 @@ resource "aws_s3_bucket" "s3" {
     for_each = local.expiration_days
     content {
       id      = "expiration_policy"
+      enabled = true
       expiration {
         days = lifecycle_rule.value
       }
