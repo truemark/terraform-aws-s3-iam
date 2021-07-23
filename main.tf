@@ -30,6 +30,17 @@ resource "aws_s3_bucket" "s3" {
     }
   }
 
+  dynamic "lifecycle_rule" {
+    for_each = local.version_expiration_days
+    content {
+      id      = "version_expiration_policy"
+      enabled = true
+      noncurrent_version_expiration {
+        days = lifecycle_rule.value
+      }
+    }
+  }
+
   dynamic "grant" {
     for_each = local.grant_ids
     content {
