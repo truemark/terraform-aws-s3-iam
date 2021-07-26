@@ -45,5 +45,9 @@ variable "enable_cloudfront_access" {
 }
 
 variable "expiration_days" {
+    default = -1
+}
+
+variable "version_expiration_days" {
   default = -1
 }
