@@ -135,7 +135,7 @@ EOF
 
 resource "aws_iam_user" "rw" {
   count = var.create_rw_user ? 1 : 0
-  name = "${var.name}-rw"
+  name = var.rw_user_name == null ? "${var.name}-rw" : var.rw_user_name
   path = var.path
 }
 
@@ -147,7 +147,7 @@ resource "aws_iam_user_policy_attachment" "rw" {
 
 resource "aws_iam_user" "ro" {
   count = var.create_ro_user ? 1 : 0
-  name = "${var.name}-ro"
+  name = var.ro_user_name == null ? "${var.name}-ro" : var.ro_user_name
   path = var.path
 }
 
