@@ -54,6 +54,8 @@ resource "aws_s3_bucket" "s3" {
   versioning {
     enabled = var.versioning
   }
+
+  tags = merge(var.tags, var.s3_tags)
 }
 
 resource "aws_s3_bucket_public_access_block" "s3" {
@@ -137,6 +139,7 @@ resource "aws_iam_user" "rw" {
   count = var.create_rw_user ? 1 : 0
   name = var.rw_user_name == null ? "${var.name}-rw" : var.rw_user_name
   path = var.path
+  tags = merge(var.tags, var.rw_user_tags)
 }
 
 resource "aws_iam_user_policy_attachment" "rw" {
@@ -149,6 +152,7 @@ resource "aws_iam_user" "ro" {
   count = var.create_ro_user ? 1 : 0
   name = var.ro_user_name == null ? "${var.name}-ro" : var.ro_user_name
   path = var.path
+  tags = merge(var.tags, var.ro_user_tags)
 }
 
 resource "aws_iam_user_policy_attachment" "ro" {

@@ -61,3 +61,27 @@ variable "expiration_days" {
 variable "version_expiration_days" {
   default = -1
 }
+
+variable "tags" {
+  description = "A map of tags to add to all resources."
+  type        = map(string)
+  default     = {}
+}
+
+variable "s3_tags" {
+  description = "A map of tags to add to the s3 bucket."
+  type        = map(string)
+  default = {}
+}
+
+variable "rw_user_tags" {
+  description = "A map of tags to add to the read-write IAM user."
+  type        = map(string)
+  default = {}
+}
+
+variable "ro_user_tags" {
+  description = "A map of tags to add to the read-only IAM user."
+  type        = map(string)
+  default = {}
+}
