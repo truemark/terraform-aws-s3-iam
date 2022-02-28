@@ -1,9 +1,9 @@
 output "s3_bucket_id" {
-  value = aws_s3_bucket.s3.id
+  value = join("", aws_s3_bucket.s3.*.id)
 }
 
 output "s3_bucket_arn" {
-  value = aws_s3_bucket.s3.arn
+  value = join("", aws_s3_bucket.s3.*.arn)
 }
 
 output "s3_bucket_name" {
@@ -11,31 +11,31 @@ output "s3_bucket_name" {
 }
 
 output "s3_bucket_regional_domain_name" {
-  value = aws_s3_bucket.s3.bucket_regional_domain_name
+  value = join("", aws_s3_bucket.s3.*.bucket_regional_domain_name)
 }
 
 output "iam_policy_rw_arn" {
-  value = aws_iam_policy.rw.arn
+  value = join("", aws_iam_policy.rw.*.arn)
 }
 
 output "iam_policy_rw_id" {
-  value = aws_iam_policy.rw.id
+  value = join("", aws_iam_policy.rw.*.id)
 }
 
 output "iam_policy_rw_name" {
-  value = aws_iam_policy.rw.name
+  value = join("", aws_iam_policy.rw.*.name)
 }
 
 output "iam_policy_ro_arn" {
-  value = aws_iam_policy.ro.arn
+  value = join("", aws_iam_policy.ro.*.arn)
 }
 
 output "iam_policy_ro_id" {
-  value = aws_iam_policy.ro.id
+  value = join("", aws_iam_policy.ro.*.id)
 }
 
 output "iam_policy_ro_name" {
-  value = aws_iam_policy.ro.name
+  value = join("", aws_iam_policy.ro.*.name)
 }
 
 output "iam_user_rw_arn" {
