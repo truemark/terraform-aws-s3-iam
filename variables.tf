@@ -111,3 +111,9 @@ variable "ro_user_tags" {
   type        = map(string)
   default = {}
 }
+
+variable "kms_master_key_id" {
+  description = "Optional AWS KMS master key ID to use for SSE-KMS encryption"
+  type = string
+  default = null
+}
