@@ -199,7 +199,7 @@ data aws_iam_policy_document "bucket_notification_topic_policy" {
       identifiers = ["s3.amazonaws.com"]
       type        = "Service"
     }
-    actions = ["sns:publish"]
+    actions = ["sns:Publish"]
     resources = [
       "arn:aws:sns:*:*:${var.name}-notifications"
     ]
