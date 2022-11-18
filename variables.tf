@@ -117,3 +117,9 @@ variable "kms_master_key_id" {
   type = string
   default = null
 }
+
+variable "create_bucket_notification_topic" {
+  description = "Creates a SNS topic to receive bucket notifications"
+  type = bool
+  default = false
+}

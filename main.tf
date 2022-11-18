@@ -191,3 +191,37 @@ resource "aws_iam_user_policy_attachment" "ro" {
   policy_arn = aws_iam_policy.ro[count.index].arn
   user = aws_iam_user.ro[count.index].name
 }
+
+data aws_iam_policy_document "bucket_notification_topic_policy" {
+  statement {
+    effect = "Allow"
+    principals {
+      identifiers = ["s3.amazonaws.com"]
+      type        = "Service"
+    }
+    actions = ["sns:publish"]
+    resources = [
+      "arn:aws:sns:*:*:${var.name}-notifications"
+    ]
+    condition {
+      test     = "ArnLike"
+      values   = [join("", aws_s3_bucket.s3.*.arn)]
+      variable = "aws:SourceArn"
+    }
+  }
+}
+
+resource "aws_sns_topic" "bucket_notification_topic" {
+  count = var.create && var.create_bucket_notification_topic ? 1 : 0
+  name = "${var.name}-notifications"
+  policy = data.aws_iam_policy_document.bucket_notification_topic_policy.json
+}
+
+resource "aws_s3_bucket_notification" "bucket_notification" {
+  count = var.create && var.create_bucket_notification_topic ? 1 : 0
+  bucket = aws_s3_bucket.s3[count.index].arn
+  topic {
+    events    = ["s3:ObjectCreated:*"]
+    topic_arn = aws_sns_topic.bucket_notification_topic[count.index].arn
+  }
+}
