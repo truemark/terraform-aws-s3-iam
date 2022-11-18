@@ -219,7 +219,7 @@ resource "aws_sns_topic" "bucket_notification_topic" {
 
 resource "aws_s3_bucket_notification" "bucket_notification" {
   count = var.create && var.create_bucket_notification_topic ? 1 : 0
-  bucket = aws_s3_bucket.s3[count.index].arn
+  bucket = aws_s3_bucket.s3[count.index].id
   topic {
     events    = ["s3:ObjectCreated:*"]
     topic_arn = aws_sns_topic.bucket_notification_topic[count.index].arn
