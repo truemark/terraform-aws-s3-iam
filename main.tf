@@ -40,7 +40,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "expiration" {
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "version_expiration" {
-  count  = var.create && local.version_expiration_days != null ? 1 : 0
+  count  = var.create && var.versioning && local.version_expiration_days != null ? 1 : 0
   bucket = aws_s3_bucket.s3[count.index].id
   rule {
     id     = "version_expiration_policy"
@@ -79,7 +79,7 @@ resource "aws_s3_bucket_acl" "acp" {
 }
 
 resource "aws_s3_bucket_versioning" "versioning" {
-  count  = var.create ? 1 : 0
+  count  = var.create && var.versioning ? 1 : 0
   bucket = aws_s3_bucket.s3[count.index].id
   versioning_configuration {
     status = var.versioning ? "Enabled" : "Disabled"
