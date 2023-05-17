@@ -16,6 +16,14 @@ resource "aws_s3_bucket" "s3" {
   tags          = merge(var.tags, var.s3_tags)
 }
 
+resource "aws_s3_bucket_ownership_controls" "s3" {
+  count = var.create && var.ownership != null ? 1 : 0
+  bucket = aws_s3_bucket.s3[count.index].id
+  rule {
+    object_ownership = var.ownership
+  }
+}
+
 resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
   count  = var.create ? 1 : 0
   bucket = aws_s3_bucket.s3[count.index].id
@@ -55,6 +63,7 @@ resource "aws_s3_bucket_acl" "acl" {
   count  = var.create && length(local.grant_ids) == 0 ? 1 : 0
   bucket = aws_s3_bucket.s3[count.index].id
   acl    = var.acl
+  depends_on = [aws_s3_bucket_ownership_controls.s3]
 }
 
 resource "aws_s3_bucket_acl" "acp" {
@@ -76,6 +85,7 @@ resource "aws_s3_bucket_acl" "acp" {
       id = data.aws_canonical_user_id.current.id
     }
   }
+  depends_on = [aws_s3_bucket_ownership_controls.s3]
 }
 
 resource "aws_s3_bucket_versioning" "versioning" {
