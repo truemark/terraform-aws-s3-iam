@@ -143,13 +143,14 @@ EOF
 }
 
 data "aws_s3_bucket" "autodump" {
+  count  = length(var.autodump_bucket_name) > 0 ? 1 : 0
   bucket = var.autodump_bucket_name
 }
 
 // autodump policy
 resource "aws_iam_policy" "rw-autodump" {
-  count       = var.create ? 1 : 0
-  name        = "${var.name}-autodump-bucket-read-write"
+  count       = var.create && length(var.autodump_bucket_name) > 0 ? 1 : 0
+  name        = "${var.name}-autodump-read-write"
   path        = var.path
   description = "Read-write access to S3 bucket ${var.autodump_bucket_name}"
   policy      = <<EOF
@@ -169,20 +170,54 @@ resource "aws_iam_policy" "rw-autodump" {
                 "s3:GetBucketLocation"
             ],
             "Resource": [
-                "${join("", [data.aws_s3_bucket.autodump.arn])}",
-                "${join("", [data.aws_s3_bucket.autodump.arn])}/*"
+                "${join("", [data.aws_s3_bucket.autodump[0].arn])}",
+                "${join("", [data.aws_s3_bucket.autodump[0].arn])}/*"
             ]
         },
         {
             "Sid": "List",
             "Effect": "Allow",
             "Action": "s3:ListBucket",
-            "Resource": "${join("", [data.aws_s3_bucket.autodump.arn])}"
+            "Resource": "${join("", [data.aws_s3_bucket.autodump[0].arn])}"
         }
     ]
 }
 EOF
 }
+
+resource "aws_iam_policy" "ro-autodump" {
+  count       = var.create && length(var.autodump_bucket_name) > 0 ? 1 : 0
+  name        = "${var.name}-autodump-read-only"
+  path        = var.path
+  description = "Read-write access to S3 bucket ${var.autodump_bucket_name}"
+  policy      = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "ReadWrite",
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObjectAcl",
+                "s3:GetObject",
+                "s3:GetBucketLocation"
+            ],
+            "Resource": [
+                "${join("", [data.aws_s3_bucket.autodump[0].arn])}",
+                "${join("", [data.aws_s3_bucket.autodump[0].arn])}/*"
+            ]
+        },
+        {
+            "Sid": "List",
+            "Effect": "Allow",
+            "Action": "s3:ListBucket",
+            "Resource": "${join("", [data.aws_s3_bucket.autodump[0].arn])}"
+        }
+    ]
+}
+EOF
+}
+
 
 resource "aws_iam_policy" "ro" {
   count       = var.create ? 1 : 0
