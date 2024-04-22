@@ -17,7 +17,7 @@ resource "aws_s3_bucket" "s3" {
 }
 
 resource "aws_s3_bucket_ownership_controls" "s3" {
-  count = var.create && var.ownership != null ? 1 : 0
+  count  = var.create && var.ownership != null ? 1 : 0
   bucket = aws_s3_bucket.s3[count.index].id
   rule {
     object_ownership = var.ownership
@@ -60,9 +60,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "version_expiration" {
 }
 
 resource "aws_s3_bucket_acl" "acl" {
-  count  = var.create && length(local.grant_ids) == 0 ? 1 : 0
-  bucket = aws_s3_bucket.s3[count.index].id
-  acl    = var.acl
+  count      = var.create && length(local.grant_ids) == 0 ? 1 : 0
+  bucket     = aws_s3_bucket.s3[count.index].id
+  acl        = var.acl
   depends_on = [aws_s3_bucket_ownership_controls.s3]
 }
 
@@ -136,6 +136,48 @@ resource "aws_iam_policy" "rw" {
             "Effect": "Allow",
             "Action": "s3:ListBucket",
             "Resource": "${join("", aws_s3_bucket.s3.*.arn)}"
+        }
+    ]
+}
+EOF
+}
+
+data "aws_s3_bucket" "autodump" {
+  bucket = var.autodump_bucket_name
+}
+
+// autodump policy
+resource "aws_iam_policy" "rw-autodump" {
+  count       = var.create ? 1 : 0
+  name        = "${var.name}-autodump-bucket-read-write"
+  path        = var.path
+  description = "Read-write access to S3 bucket ${var.autodump_bucket_name}"
+  policy      = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "ReadWrite",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:PutObjectAcl",
+                "s3:GetObjectAcl",
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:DeleteObject",
+                "s3:GetBucketLocation"
+            ],
+            "Resource": [
+                "${join("", [data.aws_s3_bucket.autodump.arn])}",
+                "${join("", [data.aws_s3_bucket.autodump.arn])}/*"
+            ]
+        },
+        {
+            "Sid": "List",
+            "Effect": "Allow",
+            "Action": "s3:ListBucket",
+            "Resource": "${join("", [data.aws_s3_bucket.autodump.arn])}"
         }
     ]
 }

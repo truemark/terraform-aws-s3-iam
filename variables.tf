@@ -23,8 +23,8 @@ variable "acl" {
 
 variable "ownership" {
   description = "Object ownership. Valid values: BucketOwnerPreferred, ObjectWriter or BucketOwnerEnforced"
-  default = "BucketOwnerPreferred"
-  type = string
+  default     = "BucketOwnerPreferred"
+  type        = string
 }
 
 variable "versioning" {
@@ -128,4 +128,10 @@ variable "create_bucket_notification_topic" {
   description = "Creates a SNS topic to receive bucket notifications"
   type        = bool
   default     = false
+}
+
+variable "autodump_bucket_name" {
+  description = "Name of the AutoDump bucket to grant access to."
+  type        = string
+  default     = null
 }
