@@ -17,7 +17,7 @@ resource "aws_s3_bucket" "s3" {
 }
 
 resource "aws_s3_bucket_ownership_controls" "s3" {
-  count = var.create && var.ownership != null ? 1 : 0
+  count  = var.create && var.ownership != null ? 1 : 0
   bucket = aws_s3_bucket.s3[count.index].id
   rule {
     object_ownership = var.ownership
@@ -60,9 +60,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "version_expiration" {
 }
 
 resource "aws_s3_bucket_acl" "acl" {
-  count  = var.create && length(local.grant_ids) == 0 ? 1 : 0
-  bucket = aws_s3_bucket.s3[count.index].id
-  acl    = var.acl
+  count      = var.create && length(local.grant_ids) == 0 ? 1 : 0
+  bucket     = aws_s3_bucket.s3[count.index].id
+  acl        = var.acl
   depends_on = [aws_s3_bucket_ownership_controls.s3]
 }
 

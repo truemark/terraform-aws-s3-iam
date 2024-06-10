@@ -23,8 +23,8 @@ variable "acl" {
 
 variable "ownership" {
   description = "Object ownership. Valid values: BucketOwnerPreferred, ObjectWriter or BucketOwnerEnforced"
-  default = "BucketOwnerPreferred"
-  type = string
+  default     = "BucketOwnerPreferred"
+  type        = string
 }
 
 variable "versioning" {
